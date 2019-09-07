@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>MoonPdfLib</id>
+    <version>0.3.1</version>
+    <title>MoonPdfLib</title>
+    <authors>Daniel Kailer</authors>
+    <owners>Daniel Kailer</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Provides a WPF user control to display PDF files</description>
+    <copyright>Copyright ©  2013</copyright>
+  </metadata>
+  <files>
+    <file src="..\..\lib\x86\libmupdf.dll" target="build\libmupdf_32.dll" />
+    <file src="..\..\lib\x64\libmupdf.dll" target="build\libmupdf_64.dll" />
+    <file src="..\..\ext\MouseKeyboardActivityMonitor\bin\Release\MouseKeyboardActivityMonitor.dll" target="lib\net40\MouseKeyboardActivityMonitor.dll" />
+  </files>
+</package>

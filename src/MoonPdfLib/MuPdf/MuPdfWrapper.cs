@@ -226,63 +226,206 @@ namespace MoonPdfLib.MuPdf
 			}
 		}
 
-		private static class NativeMethods
-		{
-			const string DLL = "libmupdf.dll";
+        private static class NativeMethods
+        {
 
-			[DllImport(DLL, EntryPoint = "fz_new_context", CallingConvention = CallingConvention.Cdecl)]
-			public static extern IntPtr NewContext(IntPtr alloc, IntPtr locks, uint max_store);
+            static bool Is64 = Environment.Is64BitProcess;
 
-			[DllImport(DLL, EntryPoint = "fz_free_context", CallingConvention = CallingConvention.Cdecl)]
-			public static extern IntPtr FreeContext(IntPtr ctx);
+            public static IntPtr NewContext(IntPtr alloc, IntPtr locks, uint max_store)
+            {
+                return Is64 ? NativeMethods64.NewContext(alloc, locks, max_store)
+                    : NativeMethods32.NewContext(alloc, locks, max_store);
+            }
 
-			[DllImport(DLL, EntryPoint = "fz_open_file_w", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
-			public static extern IntPtr OpenFile(IntPtr ctx, string fileName);
+            public static IntPtr FreeContext(IntPtr ctx)
+            {
+                return Is64 ? NativeMethods64.FreeContext(ctx)
+                    : NativeMethods32.FreeContext(ctx);
+            }
 
-			[DllImport(DLL, EntryPoint = "fz_open_document_with_stream", CallingConvention = CallingConvention.Cdecl)]
-			public static extern IntPtr OpenDocumentStream(IntPtr ctx, string magic, IntPtr stm);
+            public static IntPtr OpenFile(IntPtr ctx, string fileName)
+            {
+                return Is64 ? NativeMethods64.OpenFile(ctx, fileName)
+                    : NativeMethods32.OpenFile(ctx, fileName);
+            }
 
-			[DllImport(DLL, EntryPoint = "fz_close", CallingConvention = CallingConvention.Cdecl)]
-			public static extern IntPtr CloseStream(IntPtr stm);
+            public static IntPtr OpenDocumentStream(IntPtr ctx, string magic, IntPtr stm)
+            {
+                return Is64 ? NativeMethods64.OpenDocumentStream(ctx, magic, stm)
+                    : NativeMethods32.OpenDocumentStream(ctx, magic, stm);
+            }
 
-			[DllImport(DLL, EntryPoint = "fz_close_document", CallingConvention = CallingConvention.Cdecl)]
-			public static extern IntPtr CloseDocument(IntPtr doc);
+            public static IntPtr CloseStream(IntPtr stm)
+            {
+                return Is64 ? NativeMethods64.CloseStream(stm)
+                    : NativeMethods32.CloseStream(stm);
+            }
 
-			[DllImport(DLL, EntryPoint = "fz_count_pages", CallingConvention = CallingConvention.Cdecl)]
-			public static extern int CountPages(IntPtr doc);
+            public static IntPtr CloseDocument(IntPtr doc)
+            {
+                return Is64 ? NativeMethods64.CloseDocument(doc)
+                    : NativeMethods32.CloseDocument(doc);
+            }
 
-			[DllImport(DLL, EntryPoint = "fz_bound_page", CallingConvention = CallingConvention.Cdecl)]
-			public static extern Rectangle BoundPage(IntPtr doc, IntPtr page);
+            public static int CountPages(IntPtr doc)
+            {
+                return Is64 ? NativeMethods64.CountPages(doc)
+                    : NativeMethods32.CountPages(doc);
+            }
 
-			[DllImport(DLL, EntryPoint = "fz_clear_pixmap_with_value", CallingConvention = CallingConvention.Cdecl)]
-			public static extern void ClearPixmap(IntPtr ctx, IntPtr pix, int byteValue);
+            public static Rectangle BoundPage(IntPtr doc, IntPtr page)
+            {
+                return Is64 ? NativeMethods64.BoundPage(doc, page)
+                    : NativeMethods32.BoundPage(doc, page);
+            }
 
-			[DllImport(DLL, EntryPoint = "fz_find_device_colorspace", CallingConvention = CallingConvention.Cdecl)]
-			public static extern IntPtr FindDeviceColorSpace(IntPtr ctx, string colorspace);
+            public static void ClearPixmap(IntPtr ctx, IntPtr pix, int byteValue)
+            {
+                if (Is64)
+                    NativeMethods64.ClearPixmap(ctx, pix, byteValue);
+                else
+                    NativeMethods32.ClearPixmap(ctx, pix, byteValue);
+            }
 
-			[DllImport(DLL, EntryPoint = "fz_free_device", CallingConvention = CallingConvention.Cdecl)]
-			public static extern void FreeDevice(IntPtr dev);
+            public static IntPtr FindDeviceColorSpace(IntPtr ctx, string colorspace)
+            {
+                return Is64 ? NativeMethods64.FindDeviceColorSpace(ctx, colorspace)
+                    : NativeMethods32.FindDeviceColorSpace(ctx, colorspace);
+            }
 
-			[DllImport(DLL, EntryPoint = "fz_free_page", CallingConvention = CallingConvention.Cdecl)]
-			public static extern void FreePage(IntPtr doc, IntPtr page);
+            public static void FreeDevice(IntPtr dev)
+            {
+                if (Is64)
+                    NativeMethods64.FreeDevice(dev);
+                else
+                    NativeMethods32.FreeDevice(dev);
+            }
 
-			[DllImport(DLL, EntryPoint = "fz_load_page", CallingConvention = CallingConvention.Cdecl)]
-			public static extern IntPtr LoadPage(IntPtr doc, int pageNumber);
+            public static void FreePage(IntPtr doc, IntPtr page)
+            {
+                if (Is64)
+                    NativeMethods64.FreePage(doc, page);
+                else
+                    NativeMethods32.FreePage(doc, page);
+            }
 
-			[DllImport(DLL, EntryPoint = "fz_new_draw_device", CallingConvention = CallingConvention.Cdecl)]
-			public static extern IntPtr NewDrawDevice(IntPtr ctx, IntPtr pix);
+            public static IntPtr LoadPage(IntPtr doc, int pageNumber)
+            {
+                return Is64 ? NativeMethods64.LoadPage(doc, pageNumber)
+                    : NativeMethods32.LoadPage(doc, pageNumber);
+            }
 
-			[DllImport(DLL, EntryPoint = "fz_new_pixmap", CallingConvention = CallingConvention.Cdecl)]
-			public static extern IntPtr NewPixmap(IntPtr ctx, IntPtr colorspace, int width, int height);
+            public static IntPtr NewDrawDevice(IntPtr ctx, IntPtr pix)
+            {
+                return Is64 ? NativeMethods64.NewDrawDevice(ctx, pix)
+                    : NativeMethods32.NewDrawDevice(ctx, pix);
+            }
 
-			[DllImport(DLL, EntryPoint = "fz_run_page", CallingConvention = CallingConvention.Cdecl)]
-			public static extern void RunPage(IntPtr doc, IntPtr page, IntPtr dev, Matrix transform, IntPtr cookie);
+            public static IntPtr NewPixmap(IntPtr ctx, IntPtr colorspace, int width, int height)
+            {
+                return Is64 ? NativeMethods64.NewPixmap(ctx, colorspace, width, height)
+                    : NativeMethods32.NewPixmap(ctx, colorspace, width, height);
+            }
 
-			[DllImport(DLL, EntryPoint = "fz_drop_pixmap", CallingConvention = CallingConvention.Cdecl)]
-			public static extern void DropPixmap(IntPtr ctx, IntPtr pix);
+            public static void RunPage(IntPtr doc, IntPtr page, IntPtr dev, Matrix transform, IntPtr cookie)
+            {
+                if (Is64)
+                    NativeMethods64.RunPage(doc, page, dev, transform, cookie);
+                else
+                    NativeMethods32.RunPage(doc, page, dev, transform, cookie);
+            }
 
-			[DllImport(DLL, EntryPoint = "fz_pixmap_samples", CallingConvention = CallingConvention.Cdecl)]
-			public static extern IntPtr GetSamples(IntPtr ctx, IntPtr pix);
+
+            public static void DropPixmap(IntPtr ctx, IntPtr pix)
+            {
+                if (Is64)
+                    NativeMethods64.DropPixmap(ctx, pix);
+                else
+                    NativeMethods32.DropPixmap(ctx, pix);
+            }
+
+            public static IntPtr GetSamples(IntPtr ctx, IntPtr pix)
+            {
+                return Is64 ? NativeMethods64.GetSamples(ctx, pix)
+                    : NativeMethods32.GetSamples(ctx, pix);
+            }
+
+            public static int NeedsPassword(IntPtr doc)
+            {
+                return Is64 ? NativeMethods64.NeedsPassword(doc)
+                    : NativeMethods32.NeedsPassword(doc);
+            }
+
+            public static int AuthenticatePassword(IntPtr doc, string password)
+            {
+                return Is64 ? NativeMethods64.AuthenticatePassword(doc, password)
+                    : NativeMethods32.AuthenticatePassword(doc, password);
+            }
+
+            public static IntPtr OpenStream(IntPtr ctx, IntPtr data, int len)
+            {
+                return Is64 ? NativeMethods64.OpenStream(ctx, data, len)
+                    : NativeMethods32.OpenStream(ctx, data, len);
+            }
+        }
+
+        private static class NativeMethods32
+        {
+            const string DLL = "libmupdf_32.dll";
+
+            [DllImport(DLL, EntryPoint = "fz_new_context", CallingConvention = CallingConvention.Cdecl)]
+            public static extern IntPtr NewContext(IntPtr alloc, IntPtr locks, uint max_store);
+
+            [DllImport(DLL, EntryPoint = "fz_free_context", CallingConvention = CallingConvention.Cdecl)]
+            public static extern IntPtr FreeContext(IntPtr ctx);
+
+            [DllImport(DLL, EntryPoint = "fz_open_file_w", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
+            public static extern IntPtr OpenFile(IntPtr ctx, string fileName);
+
+            [DllImport(DLL, EntryPoint = "fz_open_document_with_stream", CallingConvention = CallingConvention.Cdecl)]
+            public static extern IntPtr OpenDocumentStream(IntPtr ctx, string magic, IntPtr stm);
+
+            [DllImport(DLL, EntryPoint = "fz_close", CallingConvention = CallingConvention.Cdecl)]
+            public static extern IntPtr CloseStream(IntPtr stm);
+
+            [DllImport(DLL, EntryPoint = "fz_close_document", CallingConvention = CallingConvention.Cdecl)]
+            public static extern IntPtr CloseDocument(IntPtr doc);
+
+            [DllImport(DLL, EntryPoint = "fz_count_pages", CallingConvention = CallingConvention.Cdecl)]
+            public static extern int CountPages(IntPtr doc);
+
+            [DllImport(DLL, EntryPoint = "fz_bound_page", CallingConvention = CallingConvention.Cdecl)]
+            public static extern Rectangle BoundPage(IntPtr doc, IntPtr page);
+
+            [DllImport(DLL, EntryPoint = "fz_clear_pixmap_with_value", CallingConvention = CallingConvention.Cdecl)]
+            public static extern void ClearPixmap(IntPtr ctx, IntPtr pix, int byteValue);
+
+            [DllImport(DLL, EntryPoint = "fz_find_device_colorspace", CallingConvention = CallingConvention.Cdecl)]
+            public static extern IntPtr FindDeviceColorSpace(IntPtr ctx, string colorspace);
+
+            [DllImport(DLL, EntryPoint = "fz_free_device", CallingConvention = CallingConvention.Cdecl)]
+            public static extern void FreeDevice(IntPtr dev);
+
+            [DllImport(DLL, EntryPoint = "fz_free_page", CallingConvention = CallingConvention.Cdecl)]
+            public static extern void FreePage(IntPtr doc, IntPtr page);
+
+            [DllImport(DLL, EntryPoint = "fz_load_page", CallingConvention = CallingConvention.Cdecl)]
+            public static extern IntPtr LoadPage(IntPtr doc, int pageNumber);
+
+            [DllImport(DLL, EntryPoint = "fz_new_draw_device", CallingConvention = CallingConvention.Cdecl)]
+            public static extern IntPtr NewDrawDevice(IntPtr ctx, IntPtr pix);
+
+            [DllImport(DLL, EntryPoint = "fz_new_pixmap", CallingConvention = CallingConvention.Cdecl)]
+            public static extern IntPtr NewPixmap(IntPtr ctx, IntPtr colorspace, int width, int height);
+
+            [DllImport(DLL, EntryPoint = "fz_run_page", CallingConvention = CallingConvention.Cdecl)]
+            public static extern void RunPage(IntPtr doc, IntPtr page, IntPtr dev, Matrix transform, IntPtr cookie);
+
+            [DllImport(DLL, EntryPoint = "fz_drop_pixmap", CallingConvention = CallingConvention.Cdecl)]
+            public static extern void DropPixmap(IntPtr ctx, IntPtr pix);
+
+            [DllImport(DLL, EntryPoint = "fz_pixmap_samples", CallingConvention = CallingConvention.Cdecl)]
+            public static extern IntPtr GetSamples(IntPtr ctx, IntPtr pix);
 
             [DllImport(DLL, EntryPoint = "fz_needs_password", CallingConvention = CallingConvention.Cdecl)]
             public static extern int NeedsPassword(IntPtr doc);
@@ -292,8 +435,76 @@ namespace MoonPdfLib.MuPdf
 
             [DllImport(DLL, EntryPoint = "fz_open_memory", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
             public static extern IntPtr OpenStream(IntPtr ctx, IntPtr data, int len);
-		}
-	}
+        }
+        private static class NativeMethods64
+        {
+            const string DLL = "libmupdf_64.dll";
+
+            [DllImport(DLL, EntryPoint = "fz_new_context", CallingConvention = CallingConvention.Cdecl)]
+            public static extern IntPtr NewContext(IntPtr alloc, IntPtr locks, uint max_store);
+
+            [DllImport(DLL, EntryPoint = "fz_free_context", CallingConvention = CallingConvention.Cdecl)]
+            public static extern IntPtr FreeContext(IntPtr ctx);
+
+            [DllImport(DLL, EntryPoint = "fz_open_file_w", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
+            public static extern IntPtr OpenFile(IntPtr ctx, string fileName);
+
+            [DllImport(DLL, EntryPoint = "fz_open_document_with_stream", CallingConvention = CallingConvention.Cdecl)]
+            public static extern IntPtr OpenDocumentStream(IntPtr ctx, string magic, IntPtr stm);
+
+            [DllImport(DLL, EntryPoint = "fz_close", CallingConvention = CallingConvention.Cdecl)]
+            public static extern IntPtr CloseStream(IntPtr stm);
+
+            [DllImport(DLL, EntryPoint = "fz_close_document", CallingConvention = CallingConvention.Cdecl)]
+            public static extern IntPtr CloseDocument(IntPtr doc);
+
+            [DllImport(DLL, EntryPoint = "fz_count_pages", CallingConvention = CallingConvention.Cdecl)]
+            public static extern int CountPages(IntPtr doc);
+
+            [DllImport(DLL, EntryPoint = "fz_bound_page", CallingConvention = CallingConvention.Cdecl)]
+            public static extern Rectangle BoundPage(IntPtr doc, IntPtr page);
+
+            [DllImport(DLL, EntryPoint = "fz_clear_pixmap_with_value", CallingConvention = CallingConvention.Cdecl)]
+            public static extern void ClearPixmap(IntPtr ctx, IntPtr pix, int byteValue);
+
+            [DllImport(DLL, EntryPoint = "fz_find_device_colorspace", CallingConvention = CallingConvention.Cdecl)]
+            public static extern IntPtr FindDeviceColorSpace(IntPtr ctx, string colorspace);
+
+            [DllImport(DLL, EntryPoint = "fz_free_device", CallingConvention = CallingConvention.Cdecl)]
+            public static extern void FreeDevice(IntPtr dev);
+
+            [DllImport(DLL, EntryPoint = "fz_free_page", CallingConvention = CallingConvention.Cdecl)]
+            public static extern void FreePage(IntPtr doc, IntPtr page);
+
+            [DllImport(DLL, EntryPoint = "fz_load_page", CallingConvention = CallingConvention.Cdecl)]
+            public static extern IntPtr LoadPage(IntPtr doc, int pageNumber);
+
+            [DllImport(DLL, EntryPoint = "fz_new_draw_device", CallingConvention = CallingConvention.Cdecl)]
+            public static extern IntPtr NewDrawDevice(IntPtr ctx, IntPtr pix);
+
+            [DllImport(DLL, EntryPoint = "fz_new_pixmap", CallingConvention = CallingConvention.Cdecl)]
+            public static extern IntPtr NewPixmap(IntPtr ctx, IntPtr colorspace, int width, int height);
+
+            [DllImport(DLL, EntryPoint = "fz_run_page", CallingConvention = CallingConvention.Cdecl)]
+            public static extern void RunPage(IntPtr doc, IntPtr page, IntPtr dev, Matrix transform, IntPtr cookie);
+
+            [DllImport(DLL, EntryPoint = "fz_drop_pixmap", CallingConvention = CallingConvention.Cdecl)]
+            public static extern void DropPixmap(IntPtr ctx, IntPtr pix);
+
+            [DllImport(DLL, EntryPoint = "fz_pixmap_samples", CallingConvention = CallingConvention.Cdecl)]
+            public static extern IntPtr GetSamples(IntPtr ctx, IntPtr pix);
+
+            [DllImport(DLL, EntryPoint = "fz_needs_password", CallingConvention = CallingConvention.Cdecl)]
+            public static extern int NeedsPassword(IntPtr doc);
+
+            [DllImport(DLL, EntryPoint = "fz_authenticate_password", CallingConvention = CallingConvention.Cdecl)]
+            public static extern int AuthenticatePassword(IntPtr doc, string password);
+
+            [DllImport(DLL, EntryPoint = "fz_open_memory", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
+            public static extern IntPtr OpenStream(IntPtr ctx, IntPtr data, int len);
+        }
+    }
+
 
     internal struct Rectangle
     {
